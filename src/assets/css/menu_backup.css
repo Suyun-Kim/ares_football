@@ -1,0 +1,60 @@
+.listH1 {
+	font-family: 'Roboto';
+	font-size: 40px;
+	font-weight: 600;
+	text-align: center;
+	color: #741a24;
+	margin: 18px auto 0px;
+	padding-bottom: 28px;
+}
+
+.listH2 {
+	font-family: 'Roboto';
+	font-size: 40px;
+	font-weight: 600;
+	text-align: center;
+	color: #741a24;
+	margin: 18px auto 0px;
+	padding-bottom: 10px;
+}
+
+.listH3 {
+	font-family: 'Roboto';
+	font-size: 30px;
+	font-weight: 600;
+	text-align: center;
+	color: #741a24;
+	margin: 18px auto 0px;
+	padding-bottom: 10px;
+}
+
+
+.listTableMenu {
+	text-align: center;
+	margin: 0 auto;
+	width: 100%;
+
+}
+
+.listTableMenu tr{
+	width: 100%;
+	text-align: center;
+}
+
+.topMenu {
+	width: 25%;
+	background: #5c0c15;
+	font-size: 16px;
+	color: #ffffff;
+	height: 30px;
+	mouse
+}
+
+.menuSelect {
+	width: 25%;
+	background: #FFFFFF;
+	color:#5c0c15;
+	font-size: 16px;
+	font-weight: 600;
+	height: 30px;
+}

@@ -1,0 +1,180 @@
+@import url('https://fonts.googleapis.com/css?family=Teko&display=swap')
+	;
+
+@import
+	url('https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap')
+	;
+
+body, header, nav, ul, li, h1 {
+	margin: 0;
+	padding: 0;
+}
+
+header {
+	background: url('/resources/images/football01.jpg') no-repeat center;
+	color: #fff;
+	height: 100px;
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	position: relative;
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .3);
+	/* border-bottom: 2px solid #007d68; */
+}
+
+#header-wrap {
+	height: 100px;
+	background: rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+	position: absolute;
+	font-size: 40px;
+	font-family: 'Teko', sans-serif;
+}
+
+.hc {
+	width: 100px;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.vc {
+	height: 40px;
+	top: 0;
+	bottom: 0;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+input, button {
+	background-color: rgba(0, 0, 0, 0);
+	border: none;
+}
+
+#game_schedule_table {
+	width: 100%;
+	text-align: center;
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+.grid {
+	background-color: #007d68;
+	color: #fff;
+	width: 100%;
+	padding: 20px 0;
+	display: grid;
+	grid-template-columns: 35% 25% 25% 15%;
+}
+
+.item {
+	border-right: 1px rgba(0, 0, 0, 0.2) solid;
+}
+
+.item:last-child {
+	border-right: none;
+}
+
+.grid2 {
+	color: #000;
+	font-family: 'Noto Sans KR', sans-serif;
+	width: 100%;
+	padding: 30px 0;
+	display: grid;
+	grid-template-columns: 35% 25% 25% 15%;
+	border-bottom: 1px solid #eee;
+}
+
+.attendance {
+	display: grid;
+	grid-template-columns: 50% 50%;
+	height: 100px;
+}
+
+.attendance input {
+	font-size: 20px;
+}
+
+.attendance #attend {
+	background-color: #ff7300;
+	color: #000;
+}
+
+.attendance #nonattend {
+	background-color: #000;
+	color: #ff7300;
+}
+
+nav {
+	position: fixed;
+	background-color: #fff;
+	width: 100%;
+	height: 60px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	border-top: 1px solid #eee;
+}
+
+nav ul {
+	width: 100%;
+	height: 60px;
+	margin: 0 auto;
+	text-align: center;
+	list-style: none;
+	display: grid;
+	grid-template-columns: 25% 25% 25% 25%;
+	width: 100%;
+	padding: 0;
+	cursor: pointer;
+}
+
+nav ul li {
+	padding-top: 20px;
+}
+
+nav ul .selected {
+	background-color: #007d68;
+	color: white;
+}
+
+@font-face {
+	font-family: 'fontello';
+	src: url('../font/fontello.eot?7449304'); src :
+	url('../font/fontello.eot?7449304#iefix') format( 'embedded-opentype'),
+	url('../font/fontello.woff?7449304') format( 'woff'),
+	url('../font/fontello.ttf?7449304') format( 'truetype'),
+	url('../font/fontello.svg?7449304#fontello') format( 'svg');
+	font-weight: normal;
+	font-style: normal;	
+}
+
+.demo-icon {
+	font-family: "fontello";
+	font-style: normal;
+	font-weight: normal;
+	speak: none;
+	display: inline-block;
+	text-decoration: inherit;
+	text-align: center;
+	font-size: 24px;
+	/* opacity: .8; */
+	/* For safety - reset parent styles, that can break glyph codes*/
+	font-variant: normal;
+	text-transform: none;
+	/* fix buttons height, for twitter bootstrap */
+	line-height: 1em;
+	/* Animation center compensation - margins should be symmetric */
+	/* remove if not needed */
+	margin-left: .2em;
+	/* You can be more comfortable with increased icons size */
+	/* font-size: 120%; */
+	/* Font smoothing. That was taken from TWBS */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	/* Uncomment for 3D effect */
+	/* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
