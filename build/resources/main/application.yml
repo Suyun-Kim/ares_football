@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://darecaga.cafe24.com:3306/darecaga?serverTimezone=UTC&characterEncoding=UTF-8
+    username: darecaga
+    password: aresteam!
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+  thymeleaf:
+    cache: false
+  mvc:
+    static-path-pattern: /static/**
+
+mybatis:
+  type-aliases-package: com.ares.football.model
+  mapper-locations: mappers/*.xml
+
+
+
+server:
+  port: 8090
+

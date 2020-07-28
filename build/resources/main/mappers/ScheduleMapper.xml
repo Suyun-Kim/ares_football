@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ares.football.repository.ScheduleRepository">
+
+    <select id="selectSchedule" parameterType="ScheduleModel" resultType="ScheduleModel">
+        SELECT
+            PLAY_INDEX, DATE_FORMAT(PLAY_TIME, '%Y-%m-%d %H:%i') AS PLAY_TIME,
+            PLAY_LOCATION, PLAY_TYPE, PLAY_TIME_LIMIT, PLAY_WINNER, PLAY_TEAM1, PLAY_TEAM2
+        FROM ares_schedule
+        ORDER BY PLAY_TIME DESC
+        LIMIT 5
+
+    </select>
+
+    <select id="selectTodaySchedule" parameterType="ScheduleModel" resultType="ScheduleModel">
+
+        SELECT
+            PLAY_INDEX, PLAY_TIME, PLAY_LOCATION, PLAY_TYPE,
+            DATE_FORMAT(PLAY_TIME_LIMIT, '%Y%m%d%H%i%s') AS PLAY_TIME_LIMIT
+        FROM ares_schedule
+        WHERE DATE_FORMAT(PLAY_TIME, '%Y%m%d') = #{play_time}
+
+    </select>
+
+    <insert id="insertAttendanceSchedule" parameterType="ScheduleModel">
+
+        INSERT INTO ares_game_vate
+            (PLAY_IDX, MEMBER_ID, MEMBER_TEL, ATTENDANCE_TIME)
+        VALUES
+            (#{play_index}, #{member_id}, #{member_pwd}, '99991231235959')
+        ON DUPLICATE KEY
+            UPDATE ATTENDANCE_TIME = '99991231235959'
+    </insert>
+
+    <delete id="deleteAttendanceSchedule" parameterType="ScheduleModel">
+        DELETE FROM ares_game_vate
+        WHERE MEMBER_ID = #{member_id}
+          AND PLAY_IDX = ${play_index}
+    </delete>
+
+    <insert id="insertNotAttendanceSchedule" parameterType="ScheduleModel">
+
+        INSERT INTO ares_game_vate_not
+            (PLAY_IDX, MEMBER_ID, MEMBER_PWD, NOT_ATTENDANCE_TIME)
+        VALUES
+        (#{play_index}, #{member_id}, #{member_pwd}, DATE_FORMAT(NOW(), '%Y%m%d%H%i%s') )
+        ON DUPLICATE KEY
+            UPDATE NOT_ATTENDANCE_TIME = DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+    </insert>
+
+    <delete id="deleteNotAttendanceSchedule" parameterType="ScheduleModel">
+
+        DELETE FROM ares_game_vate_not
+        WHERE MEMBER_ID = #{member_id}
+          AND PLAY_IDX = ${play_index}
+
+    </delete>
+
+    <select id="selectGameVoteCount" parameterType="ScheduleModel" resultType="ScheduleModel">
+
+        SELECT
+            MEMBER_CNT, VATE_CNT, NO_VATE_CNT,
+            (MEMBER_CNT-(VATE_CNT+NO_VATE_CNT)) AS NOT_VOTE_CNT
+        FROM
+            (SELECT
+                     (SELECT COUNT(*) FROM ares_member WHERE MEMBER_LEVEL != '99') AS MEMBER_CNT,
+                     (SELECT COUNT(*) FROM ares_game_vate WHERE PLAY_IDX = #{play_index}) AS VATE_CNT,
+                     (SELECT COUNT(*) FROM ares_game_vate_not WHERE PLAY_IDX = #{play_index}) AS NO_VATE_CNT
+            ) AS A
+
+    </select>
+
+
+
+    <select id="selectGameVoteList" parameterType="ScheduleModel" resultType="ScheduleModel">
+
+        SELECT A.MEMBER_ID, VATE,
+               (SELECT MEMBER_TEAM FROM ares_member WHERE A.MEMBER_ID = member_id) AS MEMBER_TEAM
+        FROM (
+                 SELECT MEMBER_ID, "참석" AS VATE FROM ares_game_vate WHERE PLAY_IDX = #{play_index}
+                 UNION
+                 SELECT MEMBER_ID,  "불참" AS VATE FROM ares_game_vate_not WHERE PLAY_IDX = #{play_index}
+             ) AS A
+        UNION
+        SELECT MEMBER_ID, "미투표" AS VATE, MEMBER_TEAM
+        FROM ares_member
+        WHERE MEMBER_ID NOT IN(
+            SELECT MEMBER_ID FROM ares_game_vate WHERE PLAY_IDX = #{play_index}
+            UNION
+            SELECT MEMBER_ID FROM ares_game_vate_not WHERE PLAY_IDX = #{play_index})
+          AND MEMBER_LEVEL != '99'
+        ORDER BY MEMBER_ID
+
+    </select>
+
+    <select id="selectLatecomerList" parameterType = "ScheduleModel" resultType="ScheduleModel">
+
+        SELECT
+            DATE_FORMAT((SELECT PLAY_TIME FROM ares_schedule WHERE PLAY_INDEX = PLAY_IDX), '%Y-%m-%d %h:%i') AS PLAY_TIME, PLAY_IDX AS PLAY_INDEX,
+            COUNT(NORMAL) AS NORMAL_CNT, COUNT(LATE) AS LATE_CNT, COUNT(NOSHOW) AS NOSHOW_CNT
+        FROM (
+                 SELECT PLAY_IDX,
+                        (SELECT PLAY_TIME FROM ares_schedule WHERE PLAY_TIME = PLAY_TIME LIMIT 1) AS PLAY_TIME,
+                        MEMBER_ID, ATTENDANCE_TIME,
+                        CASE WHEN ATTENDANCE_TIME &lt;= (SELECT PLAY_TIME_LIMIT FROM ares_schedule WHERE ares_schedule.PLAY_INDEX = PLAY_IDX) THEN '참석' END AS NORMAL,
+                        CASE WHEN ATTENDANCE_TIME &gt; (SELECT PLAY_TIME_LIMIT FROM ares_schedule WHERE ares_schedule.PLAY_INDEX = PLAY_IDX) AND ATTENDANCE_TIME &lt; "99991231235959"
+                                 THEN '지각' END AS LATE,
+                        CASE WHEN ATTENDANCE_TIME = '99991231235959'  THEN '불참' END AS NOSHOW
+                 FROM ares_game_vate
+                 GROUP BY PLAY_IDX, MEMBER_ID
+                 ORDER BY PLAY_IDX DESC
+             ) AS A
+        GROUP BY PLAY_IDX
+        ORDER BY PLAY_IDX DESC
+
+    </select>
+
+    <select id="selectLatecomerDetailList" parameterType="ScheduleModel" resultType="ScheduleModel">
+
+        SELECT PLAY_IDX, ATTENDANCE_TIME, MEMBER_ID, LATE, NOSHOW
+        FROM (
+                 SELECT
+                     PLAY_IDX,
+                     (SELECT PLAY_TIME FROM ares_schedule WHERE DATE_FORMAT(PLAY_TIME, '%Y-%m-%d %H:%i') = #{play_time}) AS PLAY_TIME,
+                     MEMBER_ID, ATTENDANCE_TIME,
+                     CASE WHEN ATTENDANCE_TIME &gt; (SELECT PLAY_TIME_LIMIT FROM ares_schedule WHERE DATE_FORMAT(PLAY_TIME, '%Y-%m-%d %H:%i') = #{play_time}) AND ATTENDANCE_TIME &lt; '99991231235959' THEN '지각' END AS LATE,
+                     CASE WHEN ATTENDANCE_TIME = '99991231235959'  THEN '불참' END AS NOSHOW
+                 FROM ares_game_vate
+                 WHERE DATE_FORMAT((SELECT PLAY_TIME FROM ares_schedule WHERE PLAY_INDEX = PLAY_IDX LIMIT 1), '%Y-%m-%d %H:%i') = #{play_time}
+                 GROUP BY PLAY_IDX, MEMBER_ID
+                 ORDER BY PLAY_IDX DESC
+             ) AS A
+        WHERE NOSHOW IS NOT NULL  OR LATE IS NOT NULL
+        GROUP BY MEMBER_ID
+
+    </select>
+
+</mapper>

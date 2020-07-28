@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ares.football.repository.LoginRepository">
+
+    <select id="selectMemberInfo" parameterType="MemberModel" resultType="MemberModel">
+        SELECT
+            MEMBER_ID, MEMBER_PWD, MEMBER_LEVEL
+        FROM ares_member
+        WHERE MEMBER_ID = #{member_id}
+        AND MEMBER_PWD = #{member_pwd}
+    </select>
+
+    <select id="selectMemberList" parameterType="MemberModel" resultType="MemberModel">
+        SELECT
+            MEMBER_ID, MEMBER_TEL, MEMBER_LEVEL
+        FROM ares_member
+        ORDER BY MEMBER_ID
+    </select>
+
+</mapper>
